@@ -7,4 +7,11 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <None Include="Assets\**\*.*">
+             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <PackageReference Include="Raylib-cs" Version="7.0.1" />
+    </ItemGroup>
+
 </Project>
