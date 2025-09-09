@@ -15,12 +15,14 @@ public abstract class Entity
     protected float Rotation = 0;
     protected int Speed = 100;
     protected bool IsWalking;
+    protected bool IsFacingLeft;
     
     protected Entity()
     {
         IsInCombat = false;
         Health = 50;
         IsWalking = false;
+        IsFacingLeft = true;
     }
 
     public abstract void Draw();
@@ -52,11 +54,13 @@ public abstract class Entity
             {
                 DestRect.X = 600;
                 Speed = -Speed;
+                IsFacingLeft = true;
             }
             else if (DestRect.X <= 0)
             {
                 DestRect.X = 0;
                 Speed = -Speed;
+                IsFacingLeft = false;
             }
         }
     }

@@ -46,7 +46,7 @@ public class Player : Entity
         _isIdle = false;
     }
 
-    private void Animate(float deltaTime)
+    private void Render(float deltaTime)
     { 
         
         if (_isFacingLeft)
@@ -90,7 +90,11 @@ public class Player : Entity
 
         
         // Animate
-        
+        Animate(deltaTime);
+    }
+
+    private void Animate(float deltaTime)
+    {
         _animData.FrameCounter += deltaTime;
         if (_animData.FrameCounter >= _animData.FrameDelay)
         {
@@ -98,7 +102,6 @@ public class Player : Entity
             _animData.FrameIndex = (_animData.FrameIndex + 1) % _animData.TotalFrames;
             SrcRect.X = _animData.FrameIndex * SrcRect.Width;
         }
-       
     }
 
     public override void Update(float deltaTime)
@@ -113,7 +116,7 @@ public class Player : Entity
         SetPositionX(150);
         SetPositionY(260);
         Console.WriteLine($"Player Position: {DestRect.X}, {DestRect.Y}");
-        Animate(deltaTime);
+        Render(deltaTime);
         _isIdle = true;
         _isRunningSide = false;
         _isFacingLeft = false;
@@ -127,7 +130,7 @@ public class Player : Entity
     protected override void Move(float deltaTime)
     {
         
-        Animate(deltaTime);
+        Render(deltaTime);
         _isRunningSide = false;
         
         
