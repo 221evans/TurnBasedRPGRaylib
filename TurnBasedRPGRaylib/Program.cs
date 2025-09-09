@@ -31,6 +31,6 @@ class Program
             Raylib.EndDrawing();
         }
         
-        Raylib.CloseWindow();
+        game.CleanUp();
     }
 }

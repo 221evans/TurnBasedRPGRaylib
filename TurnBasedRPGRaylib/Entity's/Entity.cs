@@ -2,9 +2,9 @@ using System.Numerics;
 
 namespace TurnBasedRPGRaylib.Entity_s;
 using Raylib_cs;
-public class Entity
+public abstract class Entity
 {
-    protected Rectangle DestRect;
+    public Rectangle DestRect;
     protected Rectangle SrcRect;
     protected Vector2 Origin;
     protected Texture2D IdleSideTexture;
@@ -16,16 +16,31 @@ public class Entity
     protected int Speed = 100;
     protected bool IsWalking;
     
-    public Entity()
+    protected Entity()
     {
         IsInCombat = false;
         Health = 50;
         IsWalking = false;
     }
 
-    public virtual void Draw() {}
-    public virtual void Update(float deltaTime) {}
+    public abstract void Draw();
+    public abstract void Update(float deltaTime);
 
+    public virtual float GetPositionX()
+    {
+        return DestRect.X;
+    }
+    public virtual float GetPositionY()
+    {
+        return DestRect.Y;
+    }
+    public abstract void CombatUpdate(float deltaTime);
+    
+    public abstract float SetPositionX(float x);
+    public abstract float SetPositionY(float y);
+    
+    
+    
     protected virtual void Move(float deltaTime)
     {
         if (!IsInCombat)

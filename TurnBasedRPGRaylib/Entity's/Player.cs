@@ -7,55 +7,196 @@ using Raylib_cs;
 
 public class Player : Entity
 {
+
+    private bool _isRunningSide;
+    private bool _isFacingUp;
+    private bool _isFacingDown;
+    private bool _isFacingLeft;
+    private bool _isIdle;
+    private Texture2D _currentTexture;
+    private Texture2D _runUpTexture;
+    private Texture2D _runSideTexture;
+    private Texture2D _runDownTexture;
+    private AnimationData _animData;
+    public Rectangle CollisionRect;
     
+
     public Player()
     {
         PositionX = 250;
         PositionY = 350;
-        Origin = new Vector2(64, 64);
+        Origin = Vector2.Zero;
         IdleSideTexture = Raylib.LoadTexture("Assets/Player/Idle-Side-Sheet.png");
+        _currentTexture = IdleSideTexture;
+        _runUpTexture = Raylib.LoadTexture("Assets/Player/Run-Up-Sheet.png");
+        _runDownTexture = Raylib.LoadTexture("Assets/Player/Run-Down-Sheet.png");
+        _runSideTexture = Raylib.LoadTexture("Assets/Player/Run-Side-Sheet.png");
         DestRect = new Rectangle(PositionX, PositionY, 64, 64);
         SrcRect = new Rectangle(0, 0, 64, 64);
+        CollisionRect = new Rectangle(PositionX, PositionY, 100, 64);
+        
         Rotation = 0;
         Speed = 250;
         IsInCombat = false;
         Health = 100;
+        _isRunningSide = false;
+        _isFacingUp = false;
+        _isFacingDown = false;
+        _isFacingLeft = false;
+        _isIdle = false;
     }
-    
+
+    private void Animate(float deltaTime)
+    { 
+        
+        if (_isFacingLeft)
+        {
+            SrcRect.Width = -64;
+            SrcRect.X = (_animData.FrameIndex + 1) * 64; 
+        }
+        else if (!_isFacingLeft)
+        {
+            SrcRect.Width = 64;
+        }
+        
+        if (_isRunningSide)
+        {
+            _currentTexture = _runSideTexture;
+            _animData.TotalFrames = 6;
+            _animData.FrameDelay = 0.1f;
+        }
+        
+        else if (_isFacingUp)
+        {
+            _currentTexture = _runUpTexture;
+            _animData.TotalFrames = 6;
+        }
+        else if (_isFacingDown)
+        {
+            _currentTexture = _runDownTexture;
+            _animData.TotalFrames = 6;
+        }
+
+        else if (_isIdle)
+        {
+            _currentTexture = IdleSideTexture;
+            _animData.TotalFrames = 4;
+            _animData.FrameDelay = 0.2f;
+        }
+        
+        // Safety: avoid modulo/div-by-zero
+        if (_animData.TotalFrames <= 0) _animData.TotalFrames = 1;
+        if (_animData.FrameDelay <= 0f) _animData.FrameDelay = 0.10f;
+
+        
+        // Animate
+        
+        _animData.FrameCounter += deltaTime;
+        if (_animData.FrameCounter >= _animData.FrameDelay)
+        {
+            _animData.FrameCounter -= _animData.FrameDelay;
+            _animData.FrameIndex = (_animData.FrameIndex + 1) % _animData.TotalFrames;
+            SrcRect.X = _animData.FrameIndex * SrcRect.Width;
+        }
+       
+    }
+
     public override void Update(float deltaTime)
     {
         Move(deltaTime);
-        Console.WriteLine($"Player Position: {DestRect.X}, {DestRect.Y}");
+        Console.WriteLine($"Player Position: {GetPositionX()}, {GetPositionY()}");
+        
     }
-   protected override void Move(float deltaTime)
-    {
 
+    public override void CombatUpdate(float deltaTime)
+    {
+        SetPositionX(150);
+        SetPositionY(260);
+        Console.WriteLine($"Player Position: {DestRect.X}, {DestRect.Y}");
+        Animate(deltaTime);
+        _isIdle = true;
+        _isRunningSide = false;
+        _isFacingLeft = false;
+        _isFacingUp = false;
+        _isFacingDown = false;
+        _currentTexture = IdleSideTexture;
+        _isIdle = false;
+        
+    }
+
+    protected override void Move(float deltaTime)
+    {
+        
+        Animate(deltaTime);
+        _isRunningSide = false;
+        
+        
         if (Raylib.IsKeyDown(KeyboardKey.D))
         {
             DestRect.X += Speed * deltaTime;
+            _isRunningSide = true;
+            _isFacingLeft = false;
+            _isFacingUp = false;
+            _isFacingDown = false;
+            _isIdle = false;
         }
-        if (Raylib.IsKeyDown(KeyboardKey.A))
+        else if (Raylib.IsKeyDown(KeyboardKey.A))
         {
             DestRect.X -= Speed * deltaTime;
+            _isRunningSide = true;
+            _isFacingLeft = true;
+            _isFacingUp = false;
+            _isFacingDown = false;
+            _isIdle = false;
         }
-        if (Raylib.IsKeyDown(KeyboardKey.W))
+      
+
+        else if (Raylib.IsKeyDown(KeyboardKey.W))
         {
             DestRect.Y -= Speed * deltaTime;
+            _isFacingUp = true;
+            _isRunningSide = false;
+            _isFacingLeft = false;
+            _isIdle = false;
         }
-        if (Raylib.IsKeyDown(KeyboardKey.S))
+
+        else if (Raylib.IsKeyDown(KeyboardKey.S))
         {
             DestRect.Y += Speed * deltaTime;
-        }
-    }
-    public override void Draw()
-    {
-        if (Raylib.IsTextureValid(IdleSideTexture))
-        {
-            Raylib.DrawTexturePro(IdleSideTexture, SrcRect, DestRect,Origin, Rotation, Color.White);
+            _isFacingDown = true;
+            _isRunningSide = false;
+            _isFacingLeft = false;
+            _isIdle = false;
         }
         else
-        { 
-            throw new Exception("Texture not valid");
+        {
+            _isRunningSide = false;
+            _isFacingLeft = false;
+            _isFacingUp = false;
+            _isFacingDown = false;
+            _isIdle = true;
         }
+    }
+
+    public override void Draw()
+    {
+        Raylib.DrawTexturePro(_currentTexture, SrcRect, DestRect, Origin, Rotation, Color.White);
+    }
+    
+    public override float SetPositionX(float x)
+    {
+        DestRect.X = x;
+        return x;
+    }
+
+    public override float SetPositionY(float y)
+    {
+        DestRect.Y = y;
+        return y;
+    }
+
+    public void CleanUp()
+    {
+        Raylib.UnloadTexture(IdleSideTexture);
     }
 }
