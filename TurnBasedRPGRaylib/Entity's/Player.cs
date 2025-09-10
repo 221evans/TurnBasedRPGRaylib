@@ -129,7 +129,6 @@ public class Player : Entity
         _isFacingDown = false;
         _currentTexture = IdleSideTexture;
         _isIdle = false;
-        
     }
 
     protected override void Move(float deltaTime)
