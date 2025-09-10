@@ -9,7 +9,6 @@ public abstract class Entity
     protected Vector2 Origin;
     protected Texture2D IdleSideTexture;
     protected bool IsInCombat;
-    protected int Health;
     protected int PositionX = 250;
     protected int PositionY = 350;
     protected float Rotation = 0;
@@ -20,7 +19,6 @@ public abstract class Entity
     protected Entity()
     {
         IsInCombat = false;
-        Health = 50;
         IsWalking = false;
         IsFacingLeft = true;
     }

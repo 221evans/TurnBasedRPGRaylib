@@ -8,7 +8,9 @@ public class Boar : Entity
     private bool _isFacingLeft;
     private bool _isWalking;
     private bool _isIdle;
-    public Rectangle CollisionRect;
+
+    public int Health { get; set; }
+
     AnimationData _animData;
     public Boar()
     {
@@ -23,7 +25,6 @@ public class Boar : Entity
         Speed = 250;
         IsInCombat = false;
         Health = 100;
-        CollisionRect = new Rectangle(PositionX, PositionY, 100, 100);
         _isWalking = false;
     }
 
@@ -91,12 +92,18 @@ public class Boar : Entity
         Console.WriteLine($"Boar Position: {GetPositionX()}, {GetPositionY()}");
         
     }
+    
+    public int TakeDamage(int damage)
+    {
+        Health -= damage;
+        return Health;
+    }
 
     public override void CombatUpdate(float deltaTime)
     {
         SetPositionX(450);
         SetPositionY(280);
-        Console.WriteLine($"Boar Position: {DestRect.X}, {DestRect.Y}");
+       // Console.WriteLine($"Boar Position: {DestRect.X}, {DestRect.Y}");
         Render(deltaTime);
         IsFacingLeft = true;
         IsWalking = false;

@@ -13,12 +13,13 @@ public class Player : Entity
     private bool _isFacingDown;
     private bool _isFacingLeft;
     private bool _isIdle;
+    public int Damage{get;set;}
     private Texture2D _currentTexture;
     private Texture2D _runUpTexture;
     private Texture2D _runSideTexture;
     private Texture2D _runDownTexture;
     private AnimationData _animData;
-    public Rectangle CollisionRect;
+    
     
 
     public Player()
@@ -33,12 +34,14 @@ public class Player : Entity
         _runSideTexture = Raylib.LoadTexture("Assets/Player/Run-Side-Sheet.png");
         DestRect = new Rectangle(PositionX, PositionY, 64, 64);
         SrcRect = new Rectangle(0, 0, 64, 64);
-        CollisionRect = new Rectangle(PositionX, PositionY, 100, 64);
-        
+        Damage = 10;
         Rotation = 0;
         Speed = 250;
+
+
         IsInCombat = false;
-        Health = 100;
+        
+       
         _isRunningSide = false;
         _isFacingUp = false;
         _isFacingDown = false;
@@ -115,7 +118,7 @@ public class Player : Entity
     {
         SetPositionX(150);
         SetPositionY(260);
-        Console.WriteLine($"Player Position: {DestRect.X}, {DestRect.Y}");
+       // Console.WriteLine($"Player Position: {DestRect.X}, {DestRect.Y}");
         Render(deltaTime);
         _isIdle = true;
         _isRunningSide = false;
