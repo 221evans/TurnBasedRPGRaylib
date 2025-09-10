@@ -52,6 +52,7 @@ public class Player : Entity
     private void Render(float deltaTime)
     { 
         
+        
         if (_isFacingLeft)
         {
             SrcRect.Width = -64;
@@ -109,6 +110,7 @@ public class Player : Entity
 
     public override void Update(float deltaTime)
     {
+        Raylib.DrawRectangle((int)DestRect.X, (int)DestRect.Y, (int)DestRect.Width, (int)DestRect.Height, Color.Red);
         Move(deltaTime);
         Console.WriteLine($"Player Position: {GetPositionX()}, {GetPositionY()}");
         

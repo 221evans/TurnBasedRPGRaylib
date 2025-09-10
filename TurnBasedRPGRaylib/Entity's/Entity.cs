@@ -9,18 +9,24 @@ public abstract class Entity
     protected Vector2 Origin;
     protected Texture2D IdleSideTexture;
     protected bool IsInCombat;
-    protected int PositionX = 250;
-    protected int PositionY = 350;
-    protected float Rotation = 0;
-    protected int Speed = 100;
+    protected int PositionX;
+    protected int PositionY;
+    protected float Rotation;
+    protected int Speed;
     protected bool IsWalking;
     protected bool IsFacingLeft;
+    public bool IsDead;
     
     protected Entity()
     {
         IsInCombat = false;
         IsWalking = false;
         IsFacingLeft = true;
+        PositionX = 250;
+        PositionY = 350;
+        Rotation = 0;
+        Speed = 100;
+        IsDead = false;
     }
 
     public abstract void Draw();

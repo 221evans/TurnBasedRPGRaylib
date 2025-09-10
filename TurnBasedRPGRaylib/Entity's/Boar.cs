@@ -30,6 +30,8 @@ public class Boar : Entity
 
     private void Render(float deltaTime)
     {
+        
+       
         if (IsWalking)
         {
             _currentTexture = _walkTexture;
@@ -75,6 +77,9 @@ public class Boar : Entity
 
     public override void Draw()
     {
+        
+        if (IsDead) return;
+        
         if (Raylib.IsTextureValid(IdleSideTexture))
         {
             Raylib.DrawTexturePro(_currentTexture, SrcRect, DestRect,Origin, Rotation, Color.White);
@@ -87,10 +92,12 @@ public class Boar : Entity
     
     public override void Update(float deltaTime)
     {
+       
+        if (IsDead) return;
         Render(deltaTime);
         Move(deltaTime);
         Console.WriteLine($"Boar Position: {GetPositionX()}, {GetPositionY()}");
-        
+        Raylib.DrawRectangle((int)DestRect.X, (int)DestRect.Y, (int)DestRect.Width, (int)DestRect.Height, Color.Blue);
     }
     
     public int TakeDamage(int damage)
